@@ -45,6 +45,94 @@ ChatBot::~ChatBot()
 //// STUDENT CODE
 ////
 
+    // The destructor: Responsible for freeing the resource once the object it belongs to goes out of scope.
+
+    // The assignment operator: The default assignment operation performs a member-wise shallow copy, which does not copy the content behind the resource handle. If a deep copy is needed, it has be implemented by the programmer.
+
+    // The copy constructor: As with the assignment operator, the default copy constructor performs a shallow copy of the data members. If something else is needed, the programmer has to implement it accordingly.
+
+    // The move constructor: Because copying objects can be an expensive operation which involves creating, copying and destroying temporary objects, rvalue references are used to bind to an rvalue. Using this mechanism, the move constructor transfers the ownership of a resource from a (temporary) rvalue object to a permanent lvalue object.
+
+    // The move assignment operator: With this operator, ownership of a resource can be transferred from one object to another. The internal behavior is very similar to the move constructor.
+
+
+ChatBot::ChatBot(const ChatBot &source)
+{
+    std::cout << "ChatBot Copy Constructor" << std::endl;
+
+    //Deep copy (same value, different addresses)
+    _image = new wxBitmap();
+    _image = source._image;
+
+    _chatLogic = source._chatLogic;
+    _rootNode = source._rootNode;
+    _currentNode = source._currentNode;
+}
+
+ChatBot::ChatBot(ChatBot &&source)
+{
+    std::cout << "ChatBot Move Constructor" << std::endl;;
+
+    _image = source._image;
+    _currentNode = source._currentNode;
+    _rootNode = source._rootNode;
+    _chatLogic = source._chatLogic;
+    _chatLogic->SetChatbotHandle(this);
+
+    source._image = NULL;
+    source._currentNode = nullptr;
+    source._rootNode = nullptr;
+    source._chatLogic = nullptr;
+
+}
+
+ChatBot &ChatBot::operator=(const ChatBot &source)
+{
+    std::cout << "Copy Assignment Operator" << std::endl;
+
+    if (this == &source){
+        return *this;
+    }
+
+    //TODO Is this necessary?
+    delete _image;
+    _image = new wxBitmap();
+    *_image = *source._image;
+
+    _currentNode = source._currentNode;
+    _rootNode = source._rootNode;
+    _chatLogic = source._chatLogic;
+    //TODO Is this necessary?
+    _chatLogic->SetChatbotHandle(this);
+
+    return *this;
+}
+
+ChatBot &ChatBot::operator=(ChatBot &&source)
+{
+    std::cout << "ChatBot Move Assignment Operator"<< std::endl;;
+    if (&source == this)
+    {
+        return *this;
+    }
+    
+    //TODO Is this necessary?
+    //delete _image;
+
+    _image = source._image;
+    _currentNode = source._currentNode;
+    _rootNode = source._rootNode;
+    _chatLogic = source._chatLogic;
+    //TODO Is this necessary?
+    _chatLogic->SetChatbotHandle(this); 
+
+    source._image = NULL;
+    source._currentNode = nullptr;
+    source._rootNode = nullptr;
+    source._chatLogic = nullptr;
+
+    return *this;
+}
 ////
 //// EOF STUDENT CODE
 
